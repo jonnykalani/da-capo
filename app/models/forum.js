@@ -25,7 +25,7 @@ const forumSchema = new mongoose.Schema({
   }
 })
 
-// webpageSchema.virtual('length').get(function length () {
+// forumSchema.virtual('length').get(function length () {
 //   return this.text.length
 // })
 
