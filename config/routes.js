@@ -19,5 +19,7 @@ module.exports = require('lib/wiring/routes')
 .patch('/change-password/:id', 'users#changepw')
 .resources('users', { only: ['index', 'show'] })
 .get('/ownedforums/:id', 'forums#indexByUser')
+.get('/ownedcomments/:id', 'comments#indexByUser')
+.get('/forumcomments/:id', 'comments#indexByForum')
 
 // all routes created

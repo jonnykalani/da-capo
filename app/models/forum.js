@@ -8,6 +8,10 @@ const forumSchema = new mongoose.Schema({
     required: true
   },
   tags: [String],
+  // comments: [{
+  //   type: mongoose.Schema.Types.ObjectId,
+  //   ref: 'Comment'
+  // }],
   _owner: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
