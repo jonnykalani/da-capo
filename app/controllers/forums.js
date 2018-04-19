@@ -3,6 +3,7 @@
 const controller = require('lib/wiring/controller')
 const models = require('app/models')
 const Forum = models.forum
+const Comment = models.comment
 
 const authenticate = require('./concerns/authenticate')
 const setUser = require('./concerns/set-current-user')
@@ -26,10 +27,32 @@ const indexByUser = (req, res, next) => {
     .catch(next)
 }
 
-const show = (req, res) => {
-  res.json({
-    forum: req.forum.toJSON({ virtuals: true, user: req.user })
-  })
+const show = (req, res, next) => {
+  let forum
+  console.log('req.forum.id in forums show ctrl is', req.forum.id)
+  Forum.findById(req.forum.id)
+    .then(foundForum => {
+      forum = foundForum.toObject()
+      return Comment.find({_forum: req.forum.id})
+    })
+    .then((comments) => {
+      forum.comments = comments
+      console.log('forum.comments is', forum.comments)
+      return forum
+    })
+    .then((forum) => {
+      console.log('forum.comments is', forum.comments)
+      return res.json({
+        forum: forum
+      })
+    })
+    .catch(next)
+  // const updatedForum = Object.assign(forum)
+  // console.log('forum is', forum) // this is printing before the promises
+  // res.json({
+  //   forum: req.forum.toJSON({ virtuals: true, user: req.user })
+  // })
+  // return forum.update(req.body.forum)
 }
 
 const create = (req, res, next) => {
