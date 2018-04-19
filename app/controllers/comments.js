@@ -32,7 +32,7 @@ const indexByForum = (req, res, next) => {
   Comment.find({_forum: req.params.id}).populate('_forum')
     .then(comments => res.json({
       comments: comments.map((e) =>
-        e.toJSON({ virtuals: true, forum: req.forum }))
+        e.toJSON({ virtuals: true, forum: req.forum, user: req.user }))
     }))
     .catch(next)
 }
@@ -51,15 +51,16 @@ const create = (req, res, next) => {
     _forum: new mongoose.Types.ObjectId(req.body.comment.forum)
   })
   Comment.create(comment)
-    .then(comment =>
-      res.status(201)
+    .then((comment) =>
+        res.status(201)
         .json({
           comment: comment.toJSON({ virtuals: true, user: req.user })
         }))
         .then(() => {
           console.log('comment._forum is', comment._forum)
           console.log('comment.body is', comment.body)
-          console.log('comment.id is', comment._id)
+          console.log('comment.id is', comment.id)
+          console.log('comment is', comment)
         })
     .catch(next)
 }
