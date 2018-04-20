@@ -14,6 +14,10 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true
   },
+  _image: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Image'
+  },
   passwordDigest: String
 }, {
   timestamps: true,

@@ -3,6 +3,7 @@
 const controller = require('lib/wiring/controller')
 const models = require('app/models')
 const Image = models.image
+const Forum = models.forum
 // const express = require('Express')
 
 const authenticate = require('./concerns/authenticate')
@@ -11,8 +12,7 @@ const setModel = require('./concerns/set-mongoose-model')
 const mongoose = require('mongoose')
 // const check = require('app/controllers/check-exports')
 
-const s3Upload = require('lib/aws-s3-upload.js')
-console.log('s3Upload is', s3Upload)
+const s3Upload = require('lib/aws-upload.js')
 const multer = require('multer')
 const multerUpload = multer({ dest: '/tmp/' })
 const User = models.user
@@ -27,9 +27,10 @@ const index = (req, res, next) => {
 }
 
 const indexByUser = (req, res, next) => {
+  console.log('index by user is running')
   Image.find({_owner: req.params.id}).populate('_owner')
-    .then(webpages => res.json({
-      webpages: webpages.map((e) =>
+    .then(images => res.json({
+      images: images.map((e) =>
         e.toJSON({ virtuals: true, user: req.user }))
     }))
     .catch(next)
@@ -42,13 +43,16 @@ const show = (req, res) => {
 }
 
 const create = (req, res, next) => {
+  let user
   // setting 'file' to equate req object from multer
   // console.log('req is', req)
+  console.log('req is', req)
   console.log('req.file.path is', req.file.path)
   // console.log('req.body.image.description is', req.body.image.description)
   console.log('req.user._id is', req.user._id)
   console.log('req.body is', req.body)
   console.log('image is', req.body.image)
+  console.log('forum id is', req.forumId)
   const file = {
     path: req.file.path,
     // title: req.body.image.title,
@@ -78,12 +82,30 @@ const create = (req, res, next) => {
         .json({ image: image.toJSON({ user: req.user }) })
       return image
     })
-    .then(function (image) {
-      User.findById(req.user._id)
-        .then(function (user) {
-          user.images.push(mongoose.Types.ObjectId(image._id))
-        })
-    })
+    // .then(function (image) {
+    //   User.findById(req.user._id)
+    //     .then(function (user) {
+    //       user.image = (mongoose.Types.ObjectId(image._id))
+    //     })
+    //   // return image
+    // })
+    // .then(function () {
+    //   User.findById(req.user._id)
+    //     .then(foundUser => {
+    //       user = foundUser.toObject()
+    //       return Forum.find({_owner: req.user._id})
+    //     })
+    // })
+    //     .then((forums) => {
+    //       user.forums = forums
+    //       console.log('user.forums is', user.forums)
+    //       return user
+    //     })
+    //     .then((user) => {
+    //       return res.json({
+    //         user: user
+    //       })
+    //     })
     .catch(next)
 }
 
