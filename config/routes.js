@@ -11,6 +11,7 @@ module.exports = require('lib/wiring/routes')
 .resources('examples')
 .resources('forums', { except: ['destroy'] })
 .resources('comments')
+.resources('images')
 
 // users of the app have special requirements
 .post('/sign-up', 'users#signup')
@@ -21,5 +22,7 @@ module.exports = require('lib/wiring/routes')
 .get('/ownedforums/:id', 'forums#indexByUser')
 .get('/ownedcomments/:id', 'comments#indexByUser')
 .get('/forumcomments/:id', 'comments#indexByForum')
+.get('/ownedimages/:id', 'images#indexByUser')
+// .get('/forumimages/:id', 'images#indexByUser')
 
 // all routes created

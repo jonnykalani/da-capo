@@ -18,8 +18,7 @@ const imageSchema = new mongoose.Schema({
   },
   _forum: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'Forum',
-    required: true
+    ref: 'Forum'
   }
 }, {
   timestamps: true,

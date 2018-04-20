@@ -4,6 +4,7 @@ const controller = require('lib/wiring/controller')
 const models = require('app/models')
 const Forum = models.forum
 const Comment = models.comment
+const Image = models.image
 
 const authenticate = require('./concerns/authenticate')
 const setUser = require('./concerns/set-current-user')
@@ -29,17 +30,35 @@ const indexByUser = (req, res, next) => {
 
 const show = (req, res, next) => {
   let forum
+  let image
   console.log('req.forum.id in forums show ctrl is', req.forum.id)
   Forum.findById(req.forum.id)
     .then(foundForum => {
       forum = foundForum.toObject()
+      console.log('forum is', forum)
       return Comment.find({_forum: req.forum.id})
     })
     .then((comments) => {
       forum.comments = comments
       console.log('forum.comments is', forum.comments)
+      console.log('forum has been assigned comments', forum.comments)
       return forum
     })
+    // .then((forum) => {
+    //   console.log('image find is about to happen')
+    //   console.log('req._owner.id is', req.user.id)
+    //   if (Image.find({_owner: req.user.id})) {
+    //     console.log('image is', image)
+    //     image = Image.find({_owner: req.user.id})
+    //     forum.image = image
+    //     console.log('image is', image)
+    //     console.log('image._owner is', image._owner)
+    //     return forum
+    //   } else {
+    //     console.log('forum is', forum)
+    //     return forum
+    //   }
+    // })
     .then((forum) => {
       console.log('forum.comments is', forum.comments)
       return res.json({
